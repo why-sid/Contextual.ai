@@ -1,5 +1,5 @@
 // Example API keys (replace with your actual keys)
-const NEWS_API_KEY = '69ee2571a70b4a1e950e9dfd71d4b6b0';
+const GUARDIAN_API_KEY = '0ddd8262-e88f-487c-a896-abf28adeac61';
 const DEVTO_API_URL = 'https://dev.to/api/articles'; // Dev.to API endpoint
 
 let blogPage = 1;
@@ -9,7 +9,7 @@ const pageSize = 10;
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchBlogs();
-    fetchNews();
+    fetchNews(); // Fetch news from the Guardian
     fetchTickerNews(); // Fetch ticker news on page load
 
     document.getElementById('load-more-blogs').addEventListener('click', () => {
@@ -41,29 +41,28 @@ function fetchBlogs(refresh = false) {
         })
         .catch(error => console.error('Error fetching blogs:', error));
 }
-const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
-const NEWS_API_URL = `${CORS_PROXY}https://newsapi.org/v2/top-headlines?country=us&page=${newsPage}&pageSize=${pageSize}&apiKey=${NEWS_API_KEY}`;
 
+// Fetch news from the Guardian API
 function fetchNews(refresh = false) {
-    fetch(NEWS_API_URL)
+    fetch(`https://content.guardianapis.com/search?page=${newsPage}&page-size=${pageSize}&api-key=${GUARDIAN_API_KEY}`)
         .then(response => response.json())
         .then(data => {
             const newsList = document.getElementById('news-list');
             if (refresh) {
                 newsList.innerHTML = ''; // Clear existing content
             }
-            newsList.innerHTML = data.articles.map(article => `
+            newsList.innerHTML = data.response.results.map(article => `
                 <article class="news-article">
-                    <h3>${article.title}</h3>
-                    <p>${article.description}</p>
-                    <a href="${article.url}" class="read-more">Read more</a>
+                    <h3>${article.webTitle}</h3>
+                    <p>Published on: ${new Date(article.webPublicationDate).toLocaleDateString()}</p>
+                    <a href="${article.webUrl}" class="read-more">Read more</a>
                 </article>
             `).join('');
         })
         .catch(error => console.error('Error fetching news:', error));
 }
 
-
+// GNews API for ticker
 const GNEWS_API_KEY = '351d558dbe62d2b11007cd0063a73ceb'; 
 const GNEWS_API_URL = 'https://gnews.io/api/v4/top-headlines';
 
@@ -82,4 +81,3 @@ function fetchTickerNews() {
 document.addEventListener('DOMContentLoaded', () => {
     fetchTickerNews();
 });
-
