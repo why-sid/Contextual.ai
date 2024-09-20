@@ -50,8 +50,50 @@ header {
         transform: translateX(-100%);
     }
 }
+#search-form {
+    display: none;
+    position: relative;
+}
 
+#search-form.active {
+    display: inline-block; /* Display the search form inline with the nav */
+}
+
+#search-input {
+    width: 0;
+    transition: width 0.5s ease-in-out; /* Smooth expansion of search bar */
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ff5722;
+    border-radius: 5px;
+    outline: none;
+}
+
+/* When active, expand the input field */
+#search-form.active #search-input {
+    width: 200px; /* Adjust width as needed */
+}
+
+#search-form button {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #ff5722;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+#search-form button:hover {
+    background-color: #e64a19;
+}
+
+/* Make sure the navbar links stay inline with the search bar */
 nav {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Spacing 
     position: relative;
     z-index: 1; /* Ensure nav is above ticker */
     margin-top: 50px; /* Adjust based on ticker height */
@@ -163,4 +205,43 @@ footer {
     color: #fff;
     text-align: center;
     padding: 10px;
+}
+
+@media (max-width: 768px) {
+    main {
+        flex-direction: column; /* Stack sections vertically on small screens */
+    }
+
+    .container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .featured-blogs, .featured-news, .google-ads {
+        flex: 1; /* Ensure full width on mobile */
+        margin: 0; /* Remove margins to avoid overflow */
+    }
+}
+
+
+@media (max-width: 600px) {
+    nav a {
+        display: block;
+        margin: 10px 0;
+    }
+
+    nav {
+        text-align: center; /* Center align for mobile */
+    }
+}
+
+
+@media (max-width: 768px) {
+    .featured-blogs, .featured-news {
+        flex: 1; /* Ensure full width */
+    }
+    
+    .blog-list, .news-list {
+        display: block;
+    }
 }

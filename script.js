@@ -23,6 +23,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const searchToggle = document.getElementById('search-toggle');
+    const searchForm = document.getElementById('search-form');
+    const searchInput = document.getElementById('search-input');
+
+    // Toggle search form visibility when 'Search' is clicked
+    searchToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        searchForm.classList.toggle('active');
+
+        if (searchForm.classList.contains('active')) {
+            searchInput.focus();  // Focus on the search input when it appears
+        }
+    });
+
+    // Prevent form submission for now, or handle your search logic here
+    searchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const query = searchInput.value;
+        // console.log('Search for:', query);
+        searchNews(query); // Call the search function
+    });
+});
+
+
+// Function to fetch blogs from Dev.to API
 function fetchBlogs(refresh = false) {
     fetch(`${DEVTO_API_URL}?page=${blogPage}&per_page=${pageSize}`)
         .then(response => response.json())
@@ -42,9 +68,9 @@ function fetchBlogs(refresh = false) {
         .catch(error => console.error('Error fetching blogs:', error));
 }
 
-// Fetch news from the Guardian API
+// Function to fetch news from the Guardian API
 function fetchNews(refresh = false) {
-    fetch(`https://content.guardianapis.com/search?page=${newsPage}&page-size=${pageSize}&api-key=${GUARDIAN_API_KEY}`)
+    fetch(`https://content.guardianapis.com/search?q=Indian&page=${newsPage}&page-size=${pageSize}&api-key=${GUARDIAN_API_KEY}`)
         .then(response => response.json())
         .then(data => {
             const newsList = document.getElementById('news-list');
@@ -62,12 +88,32 @@ function fetchNews(refresh = false) {
         .catch(error => console.error('Error fetching news:', error));
 }
 
+// New function for searching news based on topic and section
+function searchNews(query) {
+    const url = `https://content.guardianapis.com/search?q=${query}&page-size=${pageSize}&api-key=${GUARDIAN_API_KEY}`;
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const newsList = document.getElementById('news-list');
+            newsList.innerHTML = ''; // Clear previous results
+            newsList.innerHTML = data.response.results.map(article => `
+                <article class="news-article">
+                    <h3>${article.webTitle}</h3>
+                    <p>Published on: ${new Date(article.webPublicationDate).toLocaleDateString()}</p>
+                    <a href="${article.webUrl}" class="read-more">Read more</a>
+                </article>
+            `).join('');
+        })
+        .catch(error => console.error('Error fetching news:', error));
+}
+
 // GNews API for ticker
 const GNEWS_API_KEY = '351d558dbe62d2b11007cd0063a73ceb'; 
 const GNEWS_API_URL = 'https://gnews.io/api/v4/top-headlines';
 
 function fetchTickerNews() {
-    fetch(`${GNEWS_API_URL}?lang=en&country=us&max=5&apikey=${GNEWS_API_KEY}`)
+    fetch(`${GNEWS_API_URL}?lang=en&country=in&lang=hi&max=7&apikey=${GNEWS_API_KEY}`)
         .then(response => response.json())
         .then(data => {
             const tickerContent = document.getElementById('ticker-content');
