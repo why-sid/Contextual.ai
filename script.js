@@ -41,9 +41,11 @@ function fetchBlogs(refresh = false) {
         })
         .catch(error => console.error('Error fetching blogs:', error));
 }
+const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
+const NEWS_API_URL = `${CORS_PROXY}https://newsapi.org/v2/top-headlines?country=us&page=${newsPage}&pageSize=${pageSize}&apiKey=${NEWS_API_KEY}`;
 
 function fetchNews(refresh = false) {
-    fetch(`https://newsapi.org/v2/top-headlines?country=us&page=${newsPage}&pageSize=${pageSize}&apiKey=${NEWS_API_KEY}`)
+    fetch(NEWS_API_URL)
         .then(response => response.json())
         .then(data => {
             const newsList = document.getElementById('news-list');
@@ -61,7 +63,8 @@ function fetchNews(refresh = false) {
         .catch(error => console.error('Error fetching news:', error));
 }
 
-const GNEWS_API_KEY = '351d558dbe62d2b11007cd0063a73ceb'; // Replace with your API key
+
+const GNEWS_API_KEY = '351d558dbe62d2b11007cd0063a73ceb'; 
 const GNEWS_API_URL = 'https://gnews.io/api/v4/top-headlines';
 
 function fetchTickerNews() {
